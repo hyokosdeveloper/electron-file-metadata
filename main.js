@@ -1,7 +1,9 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
-const util = require('util')
-const path = require('path')
-const fs = require('fs')
+const util = require('util');
+const path = require('path');
+const fs = require('fs-extra');
+//const { mkdir } = require('node:fs/promises');
+//const { join } = require('node:path');
 
 const stat = util.promisify(fs.stat)
 
@@ -24,6 +26,32 @@ app.on('ready', () => {
   mainWindow.loadFile(htmlPath)
 })
 
+
+// copy files to app folder
+async function makeDirectory() {
+  const projectFolder = path.join(__dirname, 'test', 'project');
+  const dirCreation = await fs.mkdir(projectFolder, { recursive: true });
+
+  console.log(dirCreation);
+  return dirCreation;
+}
+
+async function copyFile(src, dest) {
+  try {
+    await fs.copy(src, dest);
+    console.log('File copied successfully!');
+  } catch (err) {
+    console.error('Error copying file:', err);
+  }
+}
+
+var importFiles = function(files){
+  fs.copyFile('source.txt', 'destination.txt', (err) => {
+    if (err) throw err;
+    console.log('File copied successfully!');
+  });
+};
+
 // listen for files event by browser process
 ipcMain.on('files', async (event, filesArr) => {
   try {
@@ -34,7 +62,11 @@ ipcMain.on('files', async (event, filesArr) => {
         name,
         pathName
       }))
-    )
+    );
+
+    data.forEach(file => {
+      console.log('importing file: ' + file);
+    });
 
     mainWindow.webContents.send('metadata', data)
   } catch (error) {

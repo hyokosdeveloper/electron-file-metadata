@@ -1,9 +1,7 @@
 
-# Electron File Metadata Viewer
+# Electron File System Manager
 
-File metadata viewer made with Electron.
-
-This is for an [Electron tutorial on CodeBurst.io](https://codeburst.io/build-a-file-metadata-app-in-electron-a0fe8d32410e)
+File system manager 
 
 ## Setup
 
